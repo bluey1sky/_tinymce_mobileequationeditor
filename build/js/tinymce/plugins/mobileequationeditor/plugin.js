@@ -922,7 +922,7 @@ tinymce.create('tinymce.plugins.EquationEditorPlugin', {
 
     function processContent(content) {
 
-      console.log("processContent");
+      console.log("processContent -13");
       // The entire body is being replaced and we don't know if formulas are in the $$ format.
       // Or surrounded by <span class="mathlatex">$$x+5</span>.
       var formulas = content.replace(/<span class="mathlatex(.*?)">\$\$(.*?)\$\$<\/span>/g, '$$$$$2$$$$');
@@ -1058,7 +1058,7 @@ tinymce.create('tinymce.plugins.EquationEditorPlugin', {
     });
 
     editor.on('init', function () {
-      console.log("editor.on init");
+      console.log("editor.on init -154");
 
       var link = document.createElement('link');
       link.type = 'text/css';
@@ -1116,7 +1116,7 @@ tinymce.create('tinymce.plugins.EquationEditorPlugin', {
 
     // Before SetContent is called before the html is inserted into the dom.
     editor.on('BeforeSetContent', function (ed) {
-      console.log("BeforeSetContent");
+      console.log("BeforeSetContent -213");
       if (ed.content) {
         ed.content = processContent(ed.content);
       }
@@ -1130,16 +1130,18 @@ tinymce.create('tinymce.plugins.EquationEditorPlugin', {
     };
 
     var rerenderLaTeX = function rerenderLaTeX() {
-      var body = editor.dom.getRoot();
-      var spans = $$(body).find('span.katex');
+
+      var body = $(editor.getBody());
+      var spans = $(body).find('span.katex');
 
       console.log('Rendering katex, found ' + spans.length + ' spans');
 
       spans.each(function (index) {
         var span = spans[index];
-        var equation = span.innerHTML;
+        var kequation = span.innerHTML;
+        console.log("katex equation : ", kequation);
 
-        katex.render(equation, span, { displayMode: true });
+        katex.render(kequation, span, { displayMode: true });
       });
     };
 
@@ -1147,10 +1149,12 @@ tinymce.create('tinymce.plugins.EquationEditorPlugin', {
     // Set content is called after the html is in place.
     editor.on('SetContent', function (ed) {
       var mathquills = ed.target.dom.select('span.mathlatex');
-      console.log("SetContent");
+      console.log("SetContent -249");
+      //createEquation();
       //katex.render("f(a,b,c) = (a^2+b^2+c^2)^3", katex);
 
-      createEquation();
+      // createEquation();
+      rerenderLaTeX();
 
       if (mathquills.length > 0) {
         var result = [];
@@ -1159,7 +1163,7 @@ tinymce.create('tinymce.plugins.EquationEditorPlugin', {
             // result[i] = MQ.StaticMath(mathquills[i]).reflow();
             //result[i] = katex.render(mathquills[i]).reflow();
             //createEquation();
-            console.log("SetContent-1");
+            console.log("SetContent-1-261");
             console.log("mathquills[i]", mathquills[i]);
           } else {
             // MathQuill does not support \mathbb{}.
@@ -1167,7 +1171,8 @@ tinymce.create('tinymce.plugins.EquationEditorPlugin', {
             result[i] = MQ.StaticMath(mathquills[i]).reflow();
             //result[i] = katex.render(mathquills[i]);            
             //createEquation();
-            console.log("SetContent-2 -232");
+            console.log("SetContent-2 -273");
+            console.log("result[i] -274", result[i]);
           }
         }
         return result;
